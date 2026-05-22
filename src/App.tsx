@@ -1,7 +1,7 @@
-import { Routes, Route } from "react-router-dom";
-import { ShowRoom } from "./feature/ShowRoom/components/ShowRoom";
+import { Route, Routes } from "react-router-dom";
 import { CreateRoom } from "./feature/CreateRoom/components/CreateRoom";
 import { EditRoom } from "./feature/ShowRoom/components/EditRoom";
+import { ShowRoom } from "./feature/ShowRoom/components/ShowRoom";
 
 export const App = () => {
 	return (
