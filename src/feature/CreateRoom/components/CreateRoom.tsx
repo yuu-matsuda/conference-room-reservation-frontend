@@ -30,7 +30,7 @@ export const CreateRoom = () => {
 			body: jsonString,
 		})
 			.then((res) => res.json())
-			.then((data) => setMessage(`${data.name} + を新しく登録しました。`))
+			.then((data) => setMessage(`${data.name} を新しく登録しました。`))
 			.catch((err) => setMessage(`エラー：${err}`));
 	};
 
