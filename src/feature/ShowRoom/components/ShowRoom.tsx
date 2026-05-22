@@ -1,6 +1,7 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../../../components/Button/Button";
 
 export const ShowRoom = () => {
 	const [rooms, setRooms] = useState([]);
@@ -39,23 +40,24 @@ export const ShowRoom = () => {
 		<div>
 			<div>
 				<p>会議室一覧ページです</p>
-				<button type="button" className="border border-red py-2 px-4">
+				<button type="button" className="border py-2 px-4">
 					<Link to="/create">作成画面に遷移</Link>
 				</button>
 			</div>
 			<div>
 				<p>会議室詳細</p>
-				<table>
-					<thead>
+				<table className="container">
+					<thead className="border bg-slate-50">
 						<tr>
 							<th>部屋名</th>
 							<th>人数</th>
 							<th>説明</th>
+							<th colSpan={2}>操作</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody className="text-red">
 						{rooms.map((room) => (
-							<tr key={room.id}>
+							<tr className="border" key={room.id}>
 								<td>{room.name}</td>
 								<td>{room.capacity}</td>
 								<td>{room.description}</td>
@@ -95,12 +97,18 @@ export const ShowRoom = () => {
 					<DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
 						<p>この会議室を削除しますか？</p>
 						<div className="flex gap-4">
-							<button type="button" className="border" onClick={deleteRoom}>
-								削除
-							</button>
-							<button type="button" onClick={() => setIsOpen(false)}>
-								閉じる
-							</button>
+							<Button
+								name="削除"
+								type="button"
+								colorType="danger"
+								onClick={deleteRoom}
+							></Button>
+							<Button
+								name="閉じる"
+								type="button"
+								colorType="normal"
+								onClick={() => setIsOpen(false)}
+							></Button>
 						</div>
 					</DialogPanel>
 				</div>
