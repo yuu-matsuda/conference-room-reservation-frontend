@@ -4,6 +4,7 @@ import { ShowReservation } from "../feature/ReservationRooms.tsx/components/Show
 
 export const Reservation = () => {
   const [reservations, setReservations] = useState([]);
+
   useEffect(() => {
     fetch("http://localhost:5030/api/Reservation", {
       method: "GET",
@@ -13,9 +14,9 @@ export const Reservation = () => {
   }, []);
 
   return (
-    <div className="flex justify-center gap-2">
-      <CreateReservation />
-      <ShowReservation reservations={reservations} />
+    <div className="flex justify-center gap-2 pt-2">
+      <CreateReservation reservations={reservations} setReservations={setReservations} />
+      <ShowReservation reservations={reservations} setReservations={setReservations} />
     </div>
   );
 };

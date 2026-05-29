@@ -90,7 +90,7 @@ export const RoomFormPage = (data: FormSettings) => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button name="作成" type="submit" colorType="primary"></Button>
+            <Button name={isEdit ? "更新" : "作成"} type="submit" colorType="primary"></Button>
             <Button
               name="戻る"
               type="button"

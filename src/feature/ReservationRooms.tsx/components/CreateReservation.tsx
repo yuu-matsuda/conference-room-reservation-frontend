@@ -1,52 +1,92 @@
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "../../../components/Button/Button";
-import { ListboxSelect } from "../../../components/Listbox/Listbox";
-import TimeSelect from "../../../components/TimeSelect/TimeSelect";
+import { reservationSchema } from "../schema";
+import type { ConferenceRooms, CreateReservationRequest, ReservationProperty } from "../types";
 
-export const CreateReservation = () => {
-  const roomList = [
-    { id: 1, name: "Durward Reynolds" },
-    { id: 2, name: "Kenton Towne" },
-    { id: 3, name: "Therese Wunsch" },
-    { id: 4, name: "Benedict Kessler" },
-    { id: 5, name: "Katelyn Rohan" },
-  ];
+type ReservationProps = {
+  reservations: ReservationProperty[];
+  setReservations: (arg: ReservationProperty[]) => void;
+};
+export const CreateReservation = (props: ReservationProps) => {
+  const [message, setMessage] = useState<string>();
+  const [conferenceRooms, setConferenceRooms] = useState<ConferenceRooms>([]);
 
-  const [selectedRoom, setSelectedRoom] = useState(roomList[0]);
-  const [value, setValue] = useState({
-    startDate: null,
-    endDate: null,
+  const onSubmit = (data: CreateReservationRequest) => {
+    const jsonString = JSON.stringify(data);
+    fetch("http://localhost:5030/api/Reservation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonString,
+    })
+      .then((res) => res.json())
+      .then((data) => props.setReservations([...props.reservations, data]))
+      .then(() => setMessage("会議室を予約しました。"))
+      .catch((err) => setMessage(`エラー：${err}`));
+  };
+
+  useEffect(() => {
+    fetch("http://localhost:5030/api/Room", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => setConferenceRooms(data));
+  }, []);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateReservationRequest>({
+    resolver: zodResolver(reservationSchema),
   });
 
   return (
     <div className="flex w-full max-w-lg flex-col rounded-xl bg-white shadow-lg">
       <div className="m-4">
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <p>会議室</p>
-          <ListboxSelect
-            roomList={roomList}
-            selectedRoom={selectedRoom}
-            setSelectedRoom={setSelectedRoom}
-          />
+          <select
+            className="h-8 rounded-sm border border-slate-300 bg-white px-3 text-sm"
+            {...register("roomId", { valueAsNumber: true })}
+          >
+            <option value="">選択してください</option>
+            {conferenceRooms.map((room) => (
+              <option key={room.id} value={room.id}>
+                {room.name}
+              </option>
+            ))}
+          </select>
+          {errors.roomId && <span>{errors.roomId.message}</span>}
           <p>予約名</p>
-          <input className="border" />
+          <input
+            className="mb-2 h-8 rounded-sm border border-slate-300 px-3 text-sm"
+            {...register("title")}
+          />
+          {errors.title && <span>{errors.title.message}</span>}
           <p>開始日時</p>
-          <TimeSelect
-            startHour={9}
-            endHour={21}
-            stepMinutes={5}
-            onChange={(time) => console.log("選択された時間:", time)}
+          <input
+            type="datetime-local"
+            className="mb-2 h-8 rounded-sm border border-slate-300 px-3 text-sm"
+            aria-invalid={errors.startAt ? "true" : "false"}
+            {...register("startAt")}
           />
+          {errors.startAt && <span>{errors.startAt.message}</span>}
           <p>終了日時</p>
-          <TimeSelect
-            startHour={9}
-            endHour={21}
-            stepMinutes={5}
-            onChange={(time) => console.log("選択された時間:", time)}
+          <input
+            type="datetime-local"
+            className="mb-2 h-8 rounded-sm border border-slate-300 px-3 text-sm"
+            aria-invalid={errors.startAt ? "true" : "false"}
+            {...register("endAt")}
           />
+          {errors.endAt && <span>{errors.endAt.message}</span>}
           <Button name="予約する" type="submit" colorType="primary" />
         </form>
       </div>
+      {message}
     </div>
   );
 };

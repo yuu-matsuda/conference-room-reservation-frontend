@@ -12,7 +12,7 @@ export const App = () => {
     <div className="min-h-screen">
       <header className="">
         <p className="m-4 text-center font-bold text-xl">会議室予約システム</p>
-        <div className="flex justify-end gap-2">
+        <div className="mb-2 flex justify-end gap-2">
           <button
             type="button"
             className={clsx(
