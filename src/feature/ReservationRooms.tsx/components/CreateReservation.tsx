@@ -22,10 +22,18 @@ export const CreateReservation = (props: ReservationProps) => {
       },
       body: jsonString,
     })
-      .then((res) => res.json())
-      .then((data) => props.setReservations([...props.reservations, data]))
-      .then(() => setMessage("会議室を予約しました。"))
-      .catch((err) => setMessage(`エラー：${err}`));
+      .then(async (res) => {
+        const responseData = await res.json();
+        if (!res.ok) {
+          throw new Error(responseData.message ?? "予約に失敗しました。");
+        }
+        return responseData;
+      })
+      .then((reservation) => {
+        props.setReservations([...props.reservations, reservation]);
+        setMessage("会議室を予約しました。");
+      })
+      .catch((err) => setMessage(`エラー：${err.message}`));
   };
 
   useEffect(() => {
